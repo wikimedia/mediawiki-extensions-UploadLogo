@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": "Sleeping-Lion"
+	},
+	"uploadlogo" : "로고 올리기",
+	"possible_extensions": "허용되는 파일형식",
+	"uploaded_images": "올라간 이미지들",
+	"change_logo": "로고 바꾸기",
+	"delete_logo": "로고 지우기",
+	"uploaded_logo_image" : "올라간 로고 이미지" ,
+	"result": "결과",
+	"file_name": "파일이름",
+	"file_size": "파일크기",
+	"image_preview" : "이미지미리보기"	
+}

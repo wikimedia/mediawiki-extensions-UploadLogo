@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": "Sleeping-Lion"
+	},
+	"uploadlogo" : "Upload Logo",
+	"possible_extensions": "Possible Extensions : jp(e)g,png,gif",
+	"uploaded_images": "Uploaded Images",
+	"change_logo": "Change Logo",
+	"delete_logo": "Delete Logo",
+	"uploaded_logo_image" : "Uploaded Logo Image" ,
+	"result": "Result",
+	"file_name": "File Name",
+	"file_size": "File Size",
+	"image_preview" : "Image Preview"	
+}

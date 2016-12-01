@@ -1,0 +1,35 @@
+{
+	"name": "UploadLogo",
+	"author": "Sleeping-Lion",
+	"version": "1.0.0",
+	"url": "https://www.mediawiki.org/wiki/Extension:UploadLogo",
+	"descriptionmsg": "Manage Logo By Uploaded File",
+	"type": "specialpage",
+	"license-name": "MIT",
+	"requires": {
+		"MediaWiki": ">= 1.25.0"
+	},
+	"ResourceModules": {
+		"ext.uploadLogo": {
+			"scripts": "ext.upload_logo.js",
+			"styles": "ext.upload_logo.css"
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "UploadLogo"
+	},
+	"ExtensionMessagesFiles": {
+		"UploadLogoAlias": "UploadLogo.alias.php"
+	},
+	"MessagesDirs": {
+		"UploadLogo": ["i18n"]
+	},
+	"SpecialPages": {
+		"UploadLogo": "SpecialUploadLogo"
+	},
+	"AutoloadClasses": {
+		"SpecialUploadLogo": "SpecialUploadLogo.php"
+	},
+	"manifest_version": 1
+}

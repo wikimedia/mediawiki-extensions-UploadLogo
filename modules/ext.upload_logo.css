@@ -1,0 +1,12 @@
+.upload-logo {
+	float: left;
+	width: 175px;
+	height: 175px;
+	margin: 5px;
+	padding: 5px;
+	border: 1px solid #fac;
+}
+
+.check-image {
+	position: absolute;
+}
