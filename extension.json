@@ -3,7 +3,7 @@
 	"author": "Sleeping-Lion",
 	"version": "1.0.0",
 	"url": "https://www.mediawiki.org/wiki/Extension:UploadLogo",
-	"descriptionmsg": "Manage Logo By Uploaded File",
+	"description": "Manage Logo By Uploaded File",
 	"type": "specialpage",
 	"license-name": "MIT",
 	"requires": {
