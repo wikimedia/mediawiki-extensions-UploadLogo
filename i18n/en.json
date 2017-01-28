@@ -3,6 +3,7 @@
 		"authors": "Sleeping-Lion"
 	},
 	"uploadlogo" : "Upload Logo",
+	"uploadlogo-desc": "Manage logo by uploaded file",
 	"possible_extensions": "Possible Extensions",
 	"candidate_logos": "Logo Candidates",
 	"change_logo": "Change Logo",
