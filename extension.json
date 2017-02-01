@@ -29,7 +29,9 @@
 		"UploadLogo": "SpecialUploadLogo"
 	},
 	"AutoloadClasses": {
+		"UploadLogoHooks": "UploadLogo.hooks.php",
 		"SpecialUploadLogo": "SpecialUploadLogo.php"
 	},
+  "callback": "UploadLogoHooks::onRegistration",
 	"manifest_version": 1
 }

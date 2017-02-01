@@ -8,9 +8,9 @@
  *
  * Author:   sleepinglion
  * Homepage: https://www.mediawiki.org/wiki/Extension:UploadLogo
- * 			 https://github.com/sleepinglion
+ *           https://github.com/sleepinglion
  *           http://www.sleepinglion.pe.kr
- * 			 
+ *
  *
  * License:  MIT
  *
@@ -25,11 +25,10 @@ if ( function_exists( 'wfLoadExtension' ) ) {
 	 'Deprecated PHP entry point used for WikiEditor extension. Please use wfLoadExtension instead, ' .
 	 'see https://www.mediawiki.org/wiki/Extension_registration for more details.'
 	 );*/
-	
 	return true;
 } else {
 	//die( 'This version of the Nuke extension requires MediaWiki 1.25+' );
-	
+
 	$wgExtensionCredits['specialpage'][] = array(
 		'path' => __FILE__,
 		'name' => 'UploadLogo',
