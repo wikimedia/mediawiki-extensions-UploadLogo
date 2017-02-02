@@ -32,6 +32,6 @@
 		"UploadLogoHooks": "UploadLogo.hooks.php",
 		"SpecialUploadLogo": "SpecialUploadLogo.php"
 	},
-  "callback": "UploadLogoHooks::onRegistration",
+  "callback": "UploadLogoHooks::onExtensionLoad",
 	"manifest_version": 1
 }

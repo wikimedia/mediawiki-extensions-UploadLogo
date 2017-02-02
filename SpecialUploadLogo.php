@@ -6,15 +6,20 @@ if (!defined('MEDIAWIKI')) {
 
 class SpecialUploadLogo extends SpecialPage
 {
+    protected $logoDir;
+    protected $logoScriptPath;
+
     public function __construct()
     {
         parent::__construct('UploadLogo', 'editinterface');
+        global $wgLogoDir,$wgLogoScriptPath;
+
+        $this->logoDir=$wgLogoDir;
+        $this->logoScriptPath=$wgLogoScriptPath;
     }
 
     public function execute($par)
     {
-        global $wgLogoDir,$wgLogoScriptPath,$wgLogo;
-
         $wgRequest = $this -> getRequest();
         $wgOutput = $this -> getOutput();
         $wgUser = $this -> getUser();
@@ -27,7 +32,7 @@ class SpecialUploadLogo extends SpecialPage
             return false;
         }
 
-        $logoCandidateDir = $wgLogoDir.DIRECTORY_SEPARATOR.'candidate';
+        $logoCandidateDir = $this->logoDir.DIRECTORY_SEPARATOR.'candidate';
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_FILES['logos'])) {
                 $return_url = SkinTemplate::makeSpecialUrl('uploadlogo');
@@ -35,20 +40,22 @@ class SpecialUploadLogo extends SpecialPage
                     throw new Exception("Error Processing Request", 1);
                 }
 
+                $result=wfMessage('upload_fail');
                 $logo_name = $_FILES['logos']['name'];
                 $logo_tmp = $_FILES['logos']['tmp_name'];
                 $logo_size = $_FILES['logos']['size'];
 
-                    //move_uploaded_file( $logo_tmp, $IP . '/logos' );
                 $uploadName=$this->getCandidateName($logo_name);
-                $this -> makeThumbnail($logo_tmp, $logoCandidateDir . '/' . $uploadName);
+                if ($this -> makeThumbnail($logo_tmp, $logoCandidateDir . '/' . $uploadName)) {
+                    $result=wfMessage('upload_success');
+                }
                 ob_start(); ?>
 					<strong><?php echo wfMessage('uploaded_logo_image') ?></strong>
 					<ul>
-						<li><?php echo wfMessage('result') ?>: <?php echo $result?></li>
+						<li><?php echo wfMessage('result') ?>: <?php echo $result ?></li>
 						<li><?php echo wfMessage('file_name') ?>: <?php echo $uploadName?></li>
 						<li><?php echo wfMessage('file_size') ?>: <?php echo number_format($logo_size)?>byte</li>
-						<li><?php echo wfMessage('image_preview') ?>:<br /><img src="<?php echo $wgLogoScriptPath.'/candidate/' . $uploadName?>" style="border: 1px solid #777;" /></li>
+						<li><?php echo wfMessage('image_preview') ?>:<br /><img src="<?php echo $this->logoScriptPath.'/candidate/' . $uploadName?>" style="border: 1px solid #777;" /></li>
 					</ul>
 					<br />
 					<a href="<?php echo $return_url?>">Return <?php echo wfMessage('uploadlogo')?> Page</a>
@@ -57,13 +64,16 @@ class SpecialUploadLogo extends SpecialPage
                 ob_clean();
             } else {
                 if (isset($_POST['selected'])) {
-                    echo json_encode(array('result'=>'success','logofile' =>$this->changeLogo($logoCandidateDir.DIRECTORY_SEPARATOR.$_POST['selected'], $wgLogoDir)));
+                    echo json_encode(array('result'=>'success','logofile' =>$this->changeLogo($logoCandidateDir.DIRECTORY_SEPARATOR.$_POST['selected'], $this->logoDir)));
                 }
 
                 if (isset($_POST['delete'])) {
                     if (unlink($logoCandidateDir .DIRECTORY_SEPARATOR. $_POST['delete'])) {
-                        $files=glob($wgLogoDir.DIRECTORY_SEPARATOR.'logo-'.explode('-', pathinfo($_POST['delete'], PATHINFO_FILENAME))[1].'.{png,jpg,jpeg,gif}', GLOB_BRACE);
-                        unlink($files[0]);
+                        $files=glob($this->logoDir.DIRECTORY_SEPARATOR.'logo-'.explode('-', pathinfo($_POST['delete'], PATHINFO_FILENAME))[1].'.{png,jpg,jpeg,gif}', GLOB_BRACE);
+
+                        if (count($files)) {
+                            unlink($files[0]);
+                        }
 
                         echo json_encode(array('result'=>'success','deleted' => $_POST['delete']));
                     } else {
@@ -77,13 +87,15 @@ class SpecialUploadLogo extends SpecialPage
                 $result = mkdir($logoCandidateDir, 0707);
             }
             $fileList = glob($logoCandidateDir.DIRECTORY_SEPARATOR.'*');
+            $logoFilename=$this->getLogo();
+
             ob_start(); ?>
 				<form id="upload_logo_form" method="post" enctype="multipart/form-data">
 					<fieldset>
 						<legend><?php echo wfMessage('uploadlogo') ?></legend>
-						<input type="file" id="file-logos" name="logos" size="50" required="required" accept="/image/gif,image/jpeg,image/x-png" />
+						<input type="file" id="file-logos" name="logos" size="50" required="required" accept="image/gif,image/jpeg,image/x-png" />
 						<br />
-						<label for="file-logos" style="font-weight: bold;"><?php echo wfMessage('possible_extensions') ?> : /image/gif,image/jpeg,image/x-png</label>
+						<label for="file-logos" style="font-weight: bold;"><?php echo wfMessage('possible_extensions') ?> : image/gif,image/jpeg,image/x-png</label>
 						<hr />
 						<input type="submit" value="<?php echo wfMessage('Upload') ?>" />
 					</fieldset>
@@ -97,8 +109,10 @@ class SpecialUploadLogo extends SpecialPage
                 continue;
             } ?>
 					<label for="logo_<?php echo $index ?>" class="upload-logo">
-						<input type="radio" id="logo_<?php echo $index ?>" name="logos[]" value="<?php echo pathinfo($fileName, PATHINFO_BASENAME) ?>" class="check-image" />
-						<img src="<?php echo $wgLogoScriptPath.'/candidate/'.pathinfo($fileName, PATHINFO_BASENAME) ?>" />
+						<input type="radio" id="logo_<?php echo $index ?>" name="logos[]" value="<?php echo pathinfo($fileName, PATHINFO_BASENAME) ?>" class="check-image" <?php if ($this->checkFileUUID($logoFilename, $fileName)) {
+                echo 'checked="checked"';
+            } ?> />
+						<img src="<?php echo $this->logoScriptPath.'/candidate/'.pathinfo($fileName, PATHINFO_BASENAME) ?>" />
 					</label>
 					<?php endforeach ?>
 				<hr style="clear: both;" />
@@ -112,6 +126,36 @@ class SpecialUploadLogo extends SpecialPage
         }
         $wgOutput -> addHTML($output);
     }
+
+    private function checkFileUUID($fileName1, $fileName2)
+    {
+        if (empty($fileName1) or empty($fileName2)) {
+            return false;
+        }
+
+        $fileUUID1=explode('-', pathinfo($fileName1, PATHINFO_FILENAME));
+        $fileUUID2=explode('-', pathinfo($fileName2, PATHINFO_FILENAME));
+
+        if (count($fileUUID1)<2 or count($fileUUID2)<2) {
+            return false;
+        }
+
+        if ($fileUUID1[1]==$fileUUID2[1]) {
+            return true;
+        }
+    }
+
+    public function getLogo()
+    {
+        $files=glob($this->logoDir.DIRECTORY_SEPARATOR.'{logo}*.{png,jpg,jpeg,gif}', GLOB_BRACE);
+
+        if (count($files)) {
+            return $logoFile=basename($files[0]);
+        } else {
+            return false;
+        }
+    }
+
 
     public function getCandidateName($logo_name)
     {
