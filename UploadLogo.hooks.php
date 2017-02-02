@@ -13,9 +13,6 @@ class UploadLogoHooks
       */
     public static function onExtensionLoad()
     {
-        error_reporting(E_ALL);
-        ini_set("display_errors", 1);
-
         global $IP,$wgResourceBasePath,$wgLogoScriptPath,$wgLogoDir,$wgLogo;
 
         $wgLogoDir=$IP .DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'logo';
