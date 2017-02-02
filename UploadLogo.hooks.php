@@ -34,6 +34,10 @@ class UploadLogoHooks
             if (!mkdir($logoCandidateDir)) {
                 throw new Exception("fail to make directory", 1);
             } else {
+                if (!isset($wgLogo)) {
+                    return false;
+                }
+
                 if (!file_exists($IP .$wgLogo)) {
                     return false;
                 }
