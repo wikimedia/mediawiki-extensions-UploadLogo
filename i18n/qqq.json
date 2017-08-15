@@ -1,4 +1,16 @@
 {
 	"@metadata": {},
-	"uploadlogo-desc": "{{desc|name=UploadLogo|url=https://www.mediawiki.org/wiki/Extension:UploadLogo}}"
+	"uploadlogo": "{{name}}",
+	"uploadlogo-desc": "{{desc|name=UploadLogo|url=https://www.mediawiki.org/wiki/Extension:UploadLogo}}",
+	"possible_extensions": "Used as label on Special:UploadLogo",
+	"candidate_logos": "Used as legend on Special:UploadLogo",
+	"change_logo": "Used as button on Special:UploadLogo",
+	"delete_logo": "Used as button on Special:UploadLogo",
+	"uploaded_logo_image": "Used as hint on Special:UploadLogo",
+	"upload_fail": "Shown as result on Special:UploadLogo",
+	"upload_success": "Shown as result on Special:UploadLogo",
+	"result": "Used as list item on Special:UploadLogo",
+	"file_name": "Used as list item on Special:UploadLogo",
+	"file_size": "Used as list item on Special:UploadLogo",
+	"image_preview": "Used as list item on Special:UploadLogo"
 }
