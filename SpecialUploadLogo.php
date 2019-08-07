@@ -33,7 +33,7 @@ class SpecialUploadLogo extends SpecialPage
         }
 
         $logoCandidateDir = $this->logoDir.DIRECTORY_SEPARATOR.'candidate';
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($wgRequest->wasPosted()) {
             if (isset($_FILES['logos'])) {
                 $return_url = SkinTemplate::makeSpecialUrl('uploadlogo');
                 if ($_FILES['logos']['error']!=0) {
