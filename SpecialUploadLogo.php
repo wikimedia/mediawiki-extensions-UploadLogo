@@ -1,9 +1,5 @@
 <?php
 
-if (!defined('MEDIAWIKI')) {
-    die('Not an entry point.');
-}
-
 class SpecialUploadLogo extends SpecialPage
 {
     protected $logoDir;
