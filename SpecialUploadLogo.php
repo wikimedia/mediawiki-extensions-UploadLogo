@@ -160,6 +160,10 @@ class SpecialUploadLogo extends SpecialPage
 
     public function changeLogo($candidateLogo, $directory)
     {
+        if ( !file_exists($candidateLogo) || !is_readable($candidateLogo) || is_dir($candidateLogo) ) {
+            return false;
+        }
+    
         $extention=pathinfo($candidateLogo, PATHINFO_EXTENSION);
         $logoFilename='logo-'.explode('-', pathinfo($candidateLogo, PATHINFO_FILENAME))[1].'.'.$extention;
 
@@ -198,71 +202,70 @@ class SpecialUploadLogo extends SpecialPage
 
     private function makeThumbnailGD($original_file, $thumbnail_file, $uploaded_file, $reduced_size, $use_ratio)
     {
+        if ( !file_exists($original_file) || !is_readable($original_file) || is_dir($original_file) ) {
+            return 'Error (Uploaded File does not exist..)';
+        }
         $error = false;
         $type = getimagesize($original_file);
         if ($type[0] > $reduced_size) {
-            if (file_exists($original_file)) {
-                if (!function_exists('imagegif') && $type[2] == 1) {
-                    $error = 'Error (Fail to create thumbnail. GIF. imagegif does not exist)';
-                } elseif (!function_exists('imagejpeg') && $type[2] == 2) {
-                    $error = 'Error (Fail to create thumbnail.JPEG) imagejpeg does not exist';
-                } elseif (!function_exists('imagepng') && $type[2] == 3) {
-                    $error = "Error (Fail to create thumbnail. PNG imagepng does not exist. \$type[2]= $type[2])";
+            if (!function_exists('imagegif') && $type[2] == 1) {
+                $error = 'Error (Fail to create thumbnail. GIF. imagegif does not exist)';
+            } elseif (!function_exists('imagejpeg') && $type[2] == 2) {
+                $error = 'Error (Fail to create thumbnail.JPEG) imagejpeg does not exist';
+            } elseif (!function_exists('imagepng') && $type[2] == 3) {
+                $error = "Error (Fail to create thumbnail. PNG imagepng does not exist. \$type[2]= $type[2])";
+            } else {
+                if ($type[2] == 1) {
+                    $image = imagecreatefromgif($original_file);
+                } elseif ($type[2] == 2) {
+                    $image = imagecreatefromjpeg($original_file);
+                } elseif ($type[2] == 3) {
+                    $image = imagecreatefrompng($original_file);
+                }
+
+                if (function_exists('imageantialias')) {
+                    imageantialias($image, true);
+                }
+                $image_attribute = @getimagesize($original_file);
+                if ($image_attribute[0] > $image_attribute[1]) {
+                    $image_width = $image_attribute[0];
+                    $image_height = $image_attribute[1];
+                    # 4:3
+                    if ($use_ratio) {
+                        $image_new_width = $reduced_size;
+                        $image_new_height = intval($reduced_size * 3 / 4);
+                    }# width > height
+                    else {
+                        $image_new_width = $reduced_size;
+                        $image_ratio = $image_width / $image_new_width;
+                        $image_new_height = intval($image_height / $image_ratio);
+                    }
                 } else {
-                    if ($type[2] == 1) {
-                        $image = imagecreatefromgif($original_file);
-                    } elseif ($type[2] == 2) {
-                        $image = imagecreatefromjpeg($original_file);
-                    } elseif ($type[2] == 3) {
-                        $image = imagecreatefrompng($original_file);
+                    $image_width = $image_attribute[0];
+                    $image_height = $image_attribute[1];
+                    # 3:4
+                    if ($use_ratio) {
+                        $image_new_height = $reduced_size;
+                        $image_new_width = intval($reduced_size * 3 / 4);
                     }
-
-                    if (function_exists('imageantialias')) {
-                        imageantialias($image, true);
-                    }
-                    $image_attribute = @getimagesize($original_file);
-                    if ($image_attribute[0] > $image_attribute[1]) {
-                        $image_width = $image_attribute[0];
-                        $image_height = $image_attribute[1];
-                        # 4:3
-                        if ($use_ratio) {
-                            $image_new_width = $reduced_size;
-                            $image_new_height = intval($reduced_size * 3 / 4);
-                        }# width > height
-                        else {
-                            $image_new_width = $reduced_size;
-                            $image_ratio = $image_width / $image_new_width;
-                            $image_new_height = intval($image_height / $image_ratio);
-                        }
-                    } else {
-                        $image_width = $image_attribute[0];
-                        $image_height = $image_attribute[1];
-                        # 3:4
-                        if ($use_ratio) {
-                            $image_new_height = $reduced_size;
-                            $image_new_width = intval($reduced_size * 3 / 4);
-                        }
-                        # height > width
-                        else {
-                            $image_new_height = $reduced_size;
-                            $image_ratio = $image_height / $image_new_height;
-                            $image_new_width = intval($image_width / $image_ratio);
-                        }
-                    }
-
-                    $thumbnail = imagecreatetruecolor($image_new_width, $image_new_height);
-                    @imagecopyresampled($thumbnail, $image, 0, 0, 0, 0, $image_new_width, $image_new_height, $image_attribute[0], $image_attribute[1]);
-
-                    if ($type[2] == 1 && !imagegif($thumbnail, $thumbnail_file)) {
-                        $error = 'Error (Wrong path..)';
-                    } elseif ($type[2] == 2 && !imagejpeg($thumbnail, $thumbnail_file, 100)) {
-                        $error = 'Error (Wrong path..)';
-                    } elseif ($type[2] == 3 && !imagepng($thumbnail, $thumbnail_file)) {
-                        $error = 'Error (Wrong path..)';
+                    # height > width
+                    else {
+                        $image_new_height = $reduced_size;
+                        $image_ratio = $image_height / $image_new_height;
+                        $image_new_width = intval($image_width / $image_ratio);
                     }
                 }
-            } else {
-                $error = 'Error (Uploaded File does not exist..)';
+
+                $thumbnail = imagecreatetruecolor($image_new_width, $image_new_height);
+                @imagecopyresampled($thumbnail, $image, 0, 0, 0, 0, $image_new_width, $image_new_height, $image_attribute[0], $image_attribute[1]);
+
+                if ($type[2] == 1 && !imagegif($thumbnail, $thumbnail_file)) {
+                    $error = 'Error (Wrong path..)';
+                } elseif ($type[2] == 2 && !imagejpeg($thumbnail, $thumbnail_file, 100)) {
+                    $error = 'Error (Wrong path..)';
+                } elseif ($type[2] == 3 && !imagepng($thumbnail, $thumbnail_file)) {
+                    $error = 'Error (Wrong path..)';
+                }
             }
 
             if ($error != false) {
