@@ -4,8 +4,8 @@ $( function () {
 	} );
 
 	if ( $( '#logo-file' ).val() ) {
-	//	$( '#logo-file' ).attr( 'id' ).attr( 'checked', true );
-	//	$( '#logo-file' ).attr( 'id' ).parent().css( 'background-color', '#fee' );
+		// $( '#logo-file' ).attr( 'id' ).attr( 'checked', true );
+		// $( '#logo-file' ).attr( 'id' ).parent().css( 'background-color', '#fee' );
 	}
 
 	var conf = mw.config.get( [ 'wgServer', 'wgScript' ] );
@@ -21,7 +21,7 @@ $( function () {
 
 	$( '#delete-logo' ).on( 'click', function () {
 		var img = $( '.check-image:checked' ).val();
-		$.post( conf.wgServer + conf.wgScript, { title: 'Special:Upload_Logo', 'delete': encodeURIComponent( img ) }, function ( data ) {
+		$.post( conf.wgServer + conf.wgScript, { title: 'Special:Upload_Logo', delete: encodeURIComponent( img ) }, function ( data ) {
 			if ( data.result === 'success' ) {
 				$( '.check-image:checked' ).parent().remove();
 			}
