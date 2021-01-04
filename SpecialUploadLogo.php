@@ -30,16 +30,17 @@ class SpecialUploadLogo extends SpecialPage
 
         $logoCandidateDir = $this->logoDir.DIRECTORY_SEPARATOR.'candidate';
         if ($wgRequest->wasPosted()) {
-            if (isset($_FILES['logos'])) {
+        	$upload = $wgRequest->getUpload('logos');
+            if ($upload->exists()) {
                 $return_url = SkinTemplate::makeSpecialUrl('uploadlogo');
-                if ($_FILES['logos']['error']!=0) {
+                if ($upload->getError()!=0) {
                     throw new Exception("Error Processing Request", 1);
                 }
 
                 $result=wfMessage('upload_fail');
-                $logo_name = $_FILES['logos']['name'];
-                $logo_tmp = $_FILES['logos']['tmp_name'];
-                $logo_size = $_FILES['logos']['size'];
+                $logo_name = $upload->getName();
+                $logo_tmp = $upload->getTempName();
+                $logo_size = $upload->getSize();
 
                 $uploadName=$this->getCandidateName($logo_name);
                 if ($this -> makeThumbnail($logo_tmp, $logoCandidateDir . '/' . $uploadName)) {
