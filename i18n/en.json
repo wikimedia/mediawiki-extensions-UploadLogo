@@ -2,17 +2,17 @@
 	"@metadata": {
 		"authors": "Sleeping-Lion"
 	},
-	"uploadlogo" : "Upload Logo",
+	"uploadlogo": "Upload Logo",
 	"uploadlogo-desc": "Manage logo by uploaded file",
 	"possible_extensions": "Possible Extensions",
 	"candidate_logos": "Logo Candidates",
 	"change_logo": "Change Logo",
 	"delete_logo": "Delete Logo",
-	"uploaded_logo_image" : "Uploaded Logo Image" ,
-	"upload_fail" : "Upload Fail",
-	"upload_success" : "Successfully Uploaded",
+	"uploaded_logo_image": "Uploaded Logo Image",
+	"upload_fail": "Upload Fail",
+	"upload_success": "Successfully Uploaded",
 	"result": "Result",
 	"file_name": "File Name",
 	"file_size": "File Size",
-	"image_preview" : "Image Preview"
+	"image_preview": "Image Preview"
 }

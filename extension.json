@@ -23,7 +23,7 @@
 		"UploadLogoAlias": "UploadLogo.alias.php"
 	},
 	"MessagesDirs": {
-		"UploadLogo": ["i18n"]
+		"UploadLogo": [ "i18n" ]
 	},
 	"SpecialPages": {
 		"UploadLogo": "SpecialUploadLogo"
